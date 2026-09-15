@@ -9,6 +9,7 @@ from icu_specialist import assess_vitals
 from radiologist import analyze_xray
 from patient_education import get_answer
 from pharmacist import check_interactions, check_contraindications, suggest_medications
+from psychiatrist import _phq9_questions, _gad7_questions, score_depression, score_anxiety, get_recommendations
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -136,6 +137,28 @@ def pharmacist():
         }
 
     return render_template("pharmacist.html", result=result)
+
+
+@app.route("/psychiatrist", methods=["GET", "POST"])
+def psychiatrist():
+    result = None
+
+    if request.method == "POST":
+        phq_answers = [int(request.form[f"phq_{i}"]) for i in range(9)]
+        gad_answers = [int(request.form[f"gad_{i}"]) for i in range(7)]
+
+        dep = score_depression(phq_answers)
+        anx = score_anxiety(gad_answers)
+        recommendations = get_recommendations(dep, anx)
+
+        result = {"dep": dep, "anx": anx, "recommendations": recommendations}
+
+    return render_template(
+        "psychiatrist.html",
+        phq9_questions=_phq9_questions,
+        gad7_questions=_gad7_questions,
+        result=result
+    )
 
 
 if __name__ == "__main__":

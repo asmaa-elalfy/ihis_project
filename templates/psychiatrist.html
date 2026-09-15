@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Psychiatrist AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a> |
+        <a href="/gp-consultation">GP Consultation</a> |
+        <a href="/icu-dashboard">ICU Dashboard</a> |
+        <a href="/radiology">Radiology</a> |
+        <a href="/patient-education">Patient Education</a> |
+        <a href="/pharmacist">Pharmacist</a>
+    </nav>
+
+    <h1>Psychiatrist AI — Mental Health Screening</h1>
+    <p style="color:#B24B3C;"><strong>Educational simulation. If you are in crisis, please contact a mental health professional or emergency services immediately.</strong></p>
+
+    <form method="POST">
+        <h3>PHQ-9 (Depression) — Rate each 0 (Not at all) to 3 (Nearly every day)</h3>
+        {% for q in phq9_questions %}
+        <label>{{ loop.index }}. {{ q }}</label><br>
+        <select name="phq_{{ loop.index0 }}">
+            <option value="0">0</option><option value="1">1</option>
+            <option value="2">2</option><option value="3">3</option>
+        </select><br><br>
+        {% endfor %}
+
+        <h3>GAD-7 (Anxiety) — Rate each 0 (Not at all) to 3 (Nearly every day)</h3>
+        {% for q in gad7_questions %}
+        <label>{{ loop.index }}. {{ q }}</label><br>
+        <select name="gad_{{ loop.index0 }}">
+            <option value="0">0</option><option value="1">1</option>
+            <option value="2">2</option><option value="3">3</option>
+        </select><br><br>
+        {% endfor %}
+
+        <button type="submit">Submit Assessment</button>
+    </form>
+
+    {% if result %}
+    <div style="margin-top: 20px; padding: 16px; background: #EAF1EA; border-radius: 6px;">
+        <p><strong>Depression Score:</strong> {{ result.dep.total }} ({{ result.dep.severity }})</p>
+        <p><strong>Anxiety Score:</strong> {{ result.anx.total }} ({{ result.anx.severity }})</p>
+        <p><strong>Recommendations:</strong></p>
+        <ul>
+            {% for r in result.recommendations %}<li>{{ r }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</body>
+</html>
