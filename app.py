@@ -14,6 +14,7 @@ from clinical_reasoning import generate_differential
 from emergency_bfs import bfs_triage
 from oncologist import dfs_oncology_pathway
 from treatment_planner import optimize_treatment
+from hospital_orchestrator import generate_integrated_report
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -207,6 +208,24 @@ def treatment_planner():
 
     return render_template("treatment_planner.html", result=result)
 
+@app.route("/integrated-report", methods=["GET", "POST"])
+def integrated_report():
+    report = None
+
+    if request.method == "POST":
+        full_name = request.form["full_name"]
+        age = int(request.form["age"])
+        chief_complaint = request.form["chief_complaint"]
+        symptoms = request.form["symptoms"]
+        fever = int(request.form["fever"])
+        cough = int(request.form["cough"])
+        fatigue = int(request.form["fatigue"])
+
+        report = generate_integrated_report(
+            full_name, age, chief_complaint, symptoms, fever, cough, fatigue
+        )
+
+    return render_template("integrated_report.html", report=report)
 
 if __name__ == "__main__":
     app.run(debug=True)

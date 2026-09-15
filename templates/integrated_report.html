@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Integrated Clinical Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/treatment-planner">Treatment Planner</a>
+    </nav>
+
+    <h1>Integrated Clinical Report (Multi-Agent AI)</h1>
+    <p>This combines the Receptionist, GP, and Clinical Reasoning AI agents into one report.</p>
+
+    <form method="POST">
+        <label>Full Name</label><br>
+        <input type="text" name="full_name" required><br><br>
+
+        <label>Age</label><br>
+        <input type="number" name="age" required><br><br>
+
+        <label>Chief Complaint</label><br>
+        <input type="text" name="chief_complaint" placeholder="e.g. chest pain" required><br><br>
+
+        <label>Symptoms (comma-separated, for differential diagnosis)</label><br>
+        <input type="text" name="symptoms" placeholder="e.g. fever, cough, fatigue" style="width:300px;"><br><br>
+
+        <label>Fever?</label>
+        <select name="fever"><option value="1">Yes</option><option value="0">No</option></select><br><br>
+
+        <label>Cough?</label>
+        <select name="cough"><option value="1">Yes</option><option value="0">No</option></select><br><br>
+
+        <label>Fatigue?</label>
+        <select name="fatigue"><option value="1">Yes</option><option value="0">No</option></select><br><br>
+
+        <button type="submit">Generate Integrated Report</button>
+    </form>
+
+    {% if report %}
+    <div style="margin-top: 24px; padding: 20px; background: #EAF1EA; border-radius: 8px;">
+        <h2>Clinical Report — {{ report.patient_name }} ({{ report.age }} yrs)</h2>
+
+        <p><strong>Chief Complaint:</strong> {{ report.chief_complaint }}</p>
+        <p><strong>Routed To (Receptionist AI):</strong> {{ report.routed_department }}</p>
+
+        <hr>
+        <p><strong>GP AI Prediction:</strong> {{ report.gp_prediction }}</p>
+        <p><strong>Risk Level:</strong> {{ report.risk_level }}</p>
+        <p><strong>Recommendations:</strong></p>
+        <ul>{% for r in report.recommendations %}<li>{{ r }}</li>{% endfor %}</ul>
+
+        <hr>
+        <p><strong>Clinical Reasoning AI — Differential Diagnoses:</strong></p>
+        {% for d in report.differential_diagnoses %}
+        <p>• {{ d.disease }} ({{ d.match_percentage }}% match) — {{ d.reasoning }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>
