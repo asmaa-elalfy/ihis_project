@@ -12,6 +12,7 @@ from pharmacist import check_interactions, check_contraindications, suggest_medi
 from psychiatrist import _phq9_questions, _gad7_questions, score_depression, score_anxiety, get_recommendations
 from clinical_reasoning import generate_differential
 from emergency_bfs import bfs_triage
+from oncologist import dfs_oncology_pathway
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -184,6 +185,15 @@ def emergency():
 
     return render_template("emergency.html", results=results)
 
+@app.route("/oncologist", methods=["GET", "POST"])
+def oncologist():
+    result = None
+
+    if request.method == "POST":
+        symptom = request.form["symptom"]
+        result = dfs_oncology_pathway(symptom)
+
+    return render_template("oncologist.html", result=result)
 
 if __name__ == "__main__":
     app.run(debug=True)

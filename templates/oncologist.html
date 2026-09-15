@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oncologist AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a> |
+        <a href="/emergency">Emergency</a> |
+        <a href="/clinical-reasoning">Clinical Reasoning</a>
+    </nav>
+
+    <h1>Oncologist AI (DFS Diagnostic Pathway)</h1>
+    <p>Select the presenting symptom to explore a full diagnostic pathway.</p>
+
+    <form method="POST">
+        <select name="symptom" required>
+            <option value="unexplained weight loss">Unexplained Weight Loss</option>
+        </select>
+        <button type="submit">Explore Pathway (DFS)</button>
+    </form>
+
+    {% if result %}
+    <div style="margin-top: 20px; padding: 16px; background: #EAF1EA; border-radius: 6px;">
+        <p><strong>Pathway Explored:</strong> {{ result.path | join(" → ") }}</p>
+
+        {% for f in result.findings %}
+        <div style="margin-top: 10px; padding: 10px; background: #fff; border-radius: 6px;">
+            <h3>{{ f.diagnosis }}</h3>
+            <p><strong>Recommended Investigations:</strong></p>
+            <ul>
+                {% for i in f.recommended_investigations %}<li>{{ i }}</li>{% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>
