@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
-from receptionist import triage_patient
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
+from receptionist import triage_patient
+from disease_predictor import predict_disease, assess_risk
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -32,7 +34,7 @@ def register():
     if request.method == "POST":
         complaint = request.form["chief_complaint"]
         department = triage_patient(complaint)
-        
+
         new_patient = Patient(
             full_name=request.form["full_name"],
             date_of_birth=request.form["date_of_birth"],
@@ -46,6 +48,23 @@ def register():
         return f"Patient registered successfully! Recommended department: {department}"
 
     return render_template("register.html")
+
+
+@app.route("/gp-consultation", methods=["GET", "POST"])
+def gp_consultation():
+    prediction = None
+    risk_info = None
+
+    if request.method == "POST":
+        fever = int(request.form["fever"])
+        cough = int(request.form["cough"])
+        fatigue = int(request.form["fatigue"])
+        age = int(request.form["age"])
+
+        prediction = predict_disease(fever, cough, fatigue, age)
+        risk_info = assess_risk(prediction, age)
+
+    return render_template("gp_consultation.html", prediction=prediction, risk_info=risk_info)
 
 
 if __name__ == "__main__":

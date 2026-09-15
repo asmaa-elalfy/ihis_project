@@ -1,0 +1,16 @@
+fever,cough,fatigue,age,diagnosis
+1,1,1,45,Flu
+0,0,1,60,Diabetes
+1,0,0,30,Common Cold
+1,1,0,50,Flu
+0,0,0,25,Healthy
+1,1,1,65,Flu
+0,0,1,55,Diabetes
+1,0,1,40,Common Cold
+0,1,0,35,Common Cold
+0,0,0,22,Healthy
+1,1,1,70,Flu
+0,0,1,58,Diabetes
+1,0,0,28,Common Cold
+0,0,0,33,Healthy
+1,1,0,48,Flu

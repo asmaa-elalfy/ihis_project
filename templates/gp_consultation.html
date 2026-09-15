@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>General Practitioner AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a>
+    </nav>
+
+    <h1>General Practitioner AI</h1>
+    <p>Enter symptoms to get a predicted diagnosis and recommended next steps.</p>
+
+    <form method="POST">
+        <label for="fever">Fever?</label><br>
+        <select id="fever" name="fever" required>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select><br><br>
+
+        <label for="cough">Cough?</label><br>
+        <select id="cough" name="cough" required>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select><br><br>
+
+        <label for="fatigue">Fatigue?</label><br>
+        <select id="fatigue" name="fatigue" required>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select><br><br>
+
+        <label for="age">Age</label><br>
+        <input type="number" id="age" name="age" required><br><br>
+
+        <button type="submit">Predict</button>
+    </form>
+
+       {% if prediction %}
+    <div style="margin-top: 24px; padding: 16px; background: #EAF1EA; border-radius: 6px;">
+        <h2>Predicted Diagnosis: {{ prediction }}</h2>
+        <p><strong>Risk Level:</strong> {{ risk_info.risk_level }}</p>
+        <p><strong>Recommended Investigations:</strong></p>
+        <ul>
+            {% for item in risk_info.recommendations %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</body>
+</html>
