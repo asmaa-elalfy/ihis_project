@@ -13,6 +13,7 @@ from psychiatrist import _phq9_questions, _gad7_questions, score_depression, sco
 from clinical_reasoning import generate_differential
 from emergency_bfs import bfs_triage
 from oncologist import dfs_oncology_pathway
+from treatment_planner import optimize_treatment
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -195,5 +196,18 @@ def oncologist():
 
     return render_template("oncologist.html", result=result)
 
+
+@app.route("/treatment-planner", methods=["GET", "POST"])
+def treatment_planner():
+    result = None
+
+    if request.method == "POST":
+        condition = request.form["condition"]
+        result = optimize_treatment(condition)
+
+    return render_template("treatment_planner.html", result=result)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+

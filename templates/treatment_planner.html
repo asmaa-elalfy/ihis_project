@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Treatment Planning AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/oncologist">Oncologist</a> |
+        <a href="/clinical-reasoning">Clinical Reasoning</a>
+    </nav>
+
+    <h1>Treatment Planning AI</h1>
+    <p>Compare alternative treatment plans and get an optimized recommendation.</p>
+
+    <form method="POST">
+        <select name="condition" required>
+            <option value="Hypertension">Hypertension</option>
+            <option value="Diabetes">Diabetes</option>
+            <option value="Flu">Flu</option>
+        </select>
+        <button type="submit">Optimize Treatment</button>
+    </form>
+
+    {% if result %}
+    <div style="margin-top: 20px; padding: 16px; background: #EAF1EA; border-radius: 6px;">
+        <h2>Recommended: {{ result.recommended }}</h2>
+        <table border="1" cellpadding="8" style="border-collapse: collapse; margin-top: 10px;">
+            <tr>
+                <th>Plan</th><th>Effectiveness</th><th>Risk</th><th>Cost</th><th>Reward Score</th>
+            </tr>
+            {% for p in result.ranked_plans %}
+            <tr>
+                <td>{{ p.name }}</td>
+                <td>{{ p.effectiveness }}</td>
+                <td>{{ p.risk }}</td>
+                <td>{{ p.cost }}</td>
+                <td>{{ p.reward_score }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+</body>
+</html>
