@@ -7,6 +7,7 @@ from receptionist import triage_patient
 from disease_predictor import predict_disease, assess_risk
 from icu_specialist import assess_vitals
 from radiologist import analyze_xray
+from patient_education import get_answer
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -104,6 +105,18 @@ def radiology():
             image_url = url_for("static", filename=f"uploads/{filename}")
 
     return render_template("radiology.html", result=result, image_url=image_url)
+
+
+@app.route("/patient-education", methods=["GET", "POST"])
+def patient_education():
+    answer = None
+    question = None
+
+    if request.method == "POST":
+        question = request.form["question"]
+        answer = get_answer(question)
+
+    return render_template("patient_education.html", answer=answer, question=question)
 
 
 if __name__ == "__main__":

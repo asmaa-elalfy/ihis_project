@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Education AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a> |
+        <a href="/gp-consultation">GP Consultation</a> |
+        <a href="/icu-dashboard">ICU Dashboard</a> |
+        <a href="/radiology">Radiology</a>
+    </nav>
+
+    <h1>Patient Education AI</h1>
+    <p>Ask a question about a disease or medication.</p>
+
+    <form method="POST">
+        <input type="text" name="question" placeholder="e.g. What is diabetes?" style="width:300px;" required>
+        <button type="submit">Ask</button>
+    </form>
+
+    {% if answer %}
+    <div style="margin-top: 20px; padding: 16px; background: #EAF1EA; border-radius: 6px;">
+        <p><strong>Q:</strong> {{ question }}</p>
+        <p><strong>A:</strong> {{ answer }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>
