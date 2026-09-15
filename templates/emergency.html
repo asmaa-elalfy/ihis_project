@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emergency Physician AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a> |
+        <a href="/gp-consultation">GP Consultation</a> |
+        <a href="/icu-dashboard">ICU Dashboard</a> |
+        <a href="/radiology">Radiology</a> |
+        <a href="/patient-education">Patient Education</a> |
+        <a href="/pharmacist">Pharmacist</a> |
+        <a href="/psychiatrist">Psychiatrist</a> |
+        <a href="/clinical-reasoning">Clinical Reasoning</a>
+    </nav>
+
+    <h1>Emergency Physician AI (BFS Triage)</h1>
+    <p>Select the chief complaint to explore all possible urgent conditions.</p>
+
+    <form method="POST">
+        <select name="complaint" required>
+            <option value="chest pain">Chest Pain</option>
+            <option value="difficulty breathing">Difficulty Breathing</option>
+            <option value="severe bleeding">Severe Bleeding</option>
+            <option value="abdominal pain">Abdominal Pain</option>
+            <option value="head injury">Head Injury</option>
+        </select>
+        <button type="submit">Run BFS Triage</button>
+    </form>
+
+    {% if results is not none %}
+    <div style="margin-top: 20px;">
+        {% for r in results %}
+        <div style="padding: 10px; margin-bottom: 8px; border-radius: 6px;
+                    background: {% if r.urgency == 'CRITICAL' %}#F7ECE9{% elif r.urgency == 'URGENT' %}#FBF4EC{% else %}#EAF1EA{% endif %};">
+            <strong>{{ r.condition }}</strong> — {{ r.urgency }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>

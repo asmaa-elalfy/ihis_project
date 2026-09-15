@@ -11,6 +11,7 @@ from patient_education import get_answer
 from pharmacist import check_interactions, check_contraindications, suggest_medications
 from psychiatrist import _phq9_questions, _gad7_questions, score_depression, score_anxiety, get_recommendations
 from clinical_reasoning import generate_differential
+from emergency_bfs import bfs_triage
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -171,6 +172,17 @@ def clinical_reasoning():
         results = generate_differential(symptoms)
 
     return render_template("clinical_reasoning.html", results=results)
+
+
+@app.route("/emergency", methods=["GET", "POST"])
+def emergency():
+    results = None
+
+    if request.method == "POST":
+        complaint = request.form["complaint"]
+        results = bfs_triage(complaint)
+
+    return render_template("emergency.html", results=results)
 
 
 if __name__ == "__main__":
