@@ -10,6 +10,7 @@ from radiologist import analyze_xray
 from patient_education import get_answer
 from pharmacist import check_interactions, check_contraindications, suggest_medications
 from psychiatrist import _phq9_questions, _gad7_questions, score_depression, score_anxiety, get_recommendations
+from clinical_reasoning import generate_differential
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -159,6 +160,17 @@ def psychiatrist():
         gad7_questions=_gad7_questions,
         result=result
     )
+
+
+@app.route("/clinical-reasoning", methods=["GET", "POST"])
+def clinical_reasoning():
+    results = None
+
+    if request.method == "POST":
+        symptoms = request.form["symptoms"].split(",")
+        results = generate_differential(symptoms)
+
+    return render_template("clinical_reasoning.html", results=results)
 
 
 if __name__ == "__main__":

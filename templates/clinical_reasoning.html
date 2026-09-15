@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clinical Reasoning AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a> |
+        <a href="/gp-consultation">GP Consultation</a> |
+        <a href="/icu-dashboard">ICU Dashboard</a> |
+        <a href="/radiology">Radiology</a> |
+        <a href="/patient-education">Patient Education</a> |
+        <a href="/pharmacist">Pharmacist</a> |
+        <a href="/psychiatrist">Psychiatrist</a>
+    </nav>
+
+    <h1>Clinical Reasoning AI</h1>
+    <p>Enter symptoms (comma-separated) to generate a ranked differential diagnosis.</p>
+
+    <form method="POST">
+        <input type="text" name="symptoms" placeholder="e.g. fever, cough, fatigue" style="width:400px;" required>
+        <button type="submit">Generate Differential</button>
+    </form>
+
+    {% if results is not none %}
+    <div style="margin-top: 20px;">
+        {% if results %}
+            {% for r in results %}
+            <div style="padding: 12px; margin-bottom: 10px; background: #EAF1EA; border-radius: 6px;">
+                <h3>{{ r.disease }} — {{ r.match_percentage }}% match</h3>
+                <p>{{ r.reasoning }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No matching conditions found for the given symptoms.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
