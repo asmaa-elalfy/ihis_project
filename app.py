@@ -4,6 +4,7 @@ from datetime import datetime
 
 from receptionist import triage_patient
 from disease_predictor import predict_disease, assess_risk
+from icu_specialist import assess_vitals
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -65,6 +66,22 @@ def gp_consultation():
         risk_info = assess_risk(prediction, age)
 
     return render_template("gp_consultation.html", prediction=prediction, risk_info=risk_info)
+
+
+@app.route("/icu-dashboard", methods=["GET", "POST"])
+def icu_dashboard():
+    result = None
+
+    if request.method == "POST":
+        heart_rate = int(request.form["heart_rate"])
+        systolic_bp = int(request.form["systolic_bp"])
+        spo2 = int(request.form["spo2"])
+        temperature = float(request.form["temperature"])
+        respiratory_rate = int(request.form["respiratory_rate"])
+
+        result = assess_vitals(heart_rate, systolic_bp, spo2, temperature, respiratory_rate)
+
+    return render_template("icu_dashboard.html", result=result)
 
 
 if __name__ == "__main__":
