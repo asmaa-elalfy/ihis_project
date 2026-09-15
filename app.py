@@ -8,6 +8,7 @@ from disease_predictor import predict_disease, assess_risk
 from icu_specialist import assess_vitals
 from radiologist import analyze_xray
 from patient_education import get_answer
+from pharmacist import check_interactions, check_contraindications, suggest_medications
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
@@ -117,6 +118,24 @@ def patient_education():
         answer = get_answer(question)
 
     return render_template("patient_education.html", answer=answer, question=question)
+
+
+@app.route("/pharmacist", methods=["GET", "POST"])
+def pharmacist():
+    result = None
+
+    if request.method == "POST":
+        drugs = [d for d in request.form["drugs"].split(",") if d.strip()]
+        conditions = [c for c in request.form["conditions"].split(",") if c.strip()]
+        symptom = request.form["symptom"]
+
+        result = {
+            "interactions": check_interactions(drugs),
+            "contraindications": check_contraindications(drugs, conditions),
+            "suggestions": suggest_medications(symptom) if symptom else []
+        }
+
+    return render_template("pharmacist.html", result=result)
 
 
 if __name__ == "__main__":

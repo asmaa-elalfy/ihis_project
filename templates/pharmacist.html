@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clinical Pharmacist AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a> |
+        <a href="/gp-consultation">GP Consultation</a> |
+        <a href="/icu-dashboard">ICU Dashboard</a> |
+        <a href="/radiology">Radiology</a> |
+        <a href="/patient-education">Patient Education</a>
+    </nav>
+
+    <h1>Clinical Pharmacist AI</h1>
+
+    <form method="POST">
+        <label>Current Medications (comma-separated)</label><br>
+        <input type="text" name="drugs" placeholder="e.g. warfarin, aspirin" style="width:300px;"><br><br>
+
+        <label>Existing Conditions (comma-separated)</label><br>
+        <input type="text" name="conditions" placeholder="e.g. kidney disease" style="width:300px;"><br><br>
+
+        <label>Symptom for Recommendation</label><br>
+        <input type="text" name="symptom" placeholder="e.g. fever" style="width:300px;"><br><br>
+
+        <button type="submit">Check Safety</button>
+    </form>
+
+    {% if result %}
+    <div style="margin-top: 20px; padding: 16px; background: #EAF1EA; border-radius: 6px;">
+        <p><strong>Drug Interactions:</strong></p>
+        <ul>
+            {% for a in result.interactions %}<li>{{ a }}</li>{% else %}<li>None found</li>{% endfor %}
+        </ul>
+
+        <p><strong>Contraindications:</strong></p>
+        <ul>
+            {% for f in result.contraindications %}<li>{{ f }}</li>{% else %}<li>None found</li>{% endfor %}
+        </ul>
+
+        <p><strong>Suggested Medications:</strong></p>
+        <ul>
+            {% for m in result.suggestions %}<li>{{ m }}</li>{% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</body>
+</html>
