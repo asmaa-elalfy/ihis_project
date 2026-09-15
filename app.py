@@ -1,13 +1,16 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from werkzeug.utils import secure_filename
 
 from receptionist import triage_patient
 from disease_predictor import predict_disease, assess_risk
 from icu_specialist import assess_vitals
+from radiologist import analyze_xray
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///his.db"
+app.config["UPLOAD_FOLDER"] = os.path.join("static", "uploads")
 db = SQLAlchemy(app)
 
 
@@ -82,6 +85,25 @@ def icu_dashboard():
         result = assess_vitals(heart_rate, systolic_bp, spo2, temperature, respiratory_rate)
 
     return render_template("icu_dashboard.html", result=result)
+
+
+@app.route("/radiology", methods=["GET", "POST"])
+def radiology():
+    result = None
+    image_url = None
+
+    if request.method == "POST":
+        file = request.files["xray_image"]
+        if file:
+            os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(filepath)
+
+            result = analyze_xray(filepath)
+            image_url = url_for("static", filename=f"uploads/{filename}")
+
+    return render_template("radiology.html", result=result, image_url=image_url)
 
 
 if __name__ == "__main__":

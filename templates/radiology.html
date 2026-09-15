@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Radiologist AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/register">Register Patient</a> |
+        <a href="/gp-consultation">GP Consultation</a> |
+        <a href="/icu-dashboard">ICU Dashboard</a>
+    </nav>
+
+    <h1>Radiologist AI</h1>
+    <p>Upload a chest X-ray image for AI-assisted analysis.</p>
+    <p style="color:#B24B3C;"><strong>Educational simulation only — not a real diagnostic tool.</strong></p>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="xray_image" accept="image/*" required><br><br>
+        <button type="submit">Analyze X-ray</button>
+    </form>
+
+    {% if result %}
+    <div style="margin-top: 24px; padding: 16px; border-radius: 6px;
+                background: {% if result.status == 'ABNORMAL' %}#F7ECE9{% else %}#EAF1EA{% endif %};">
+        <h2>Status: {{ result.status }}</h2>
+        <ul>
+            {% for f in result.findings %}
+            <li>{{ f }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if image_url %}
+    <img src="{{ image_url }}" style="max-width: 300px; margin-top: 16px; border-radius: 6px;">
+    {% endif %}
+    {% endif %}
+</body>
+</html>
